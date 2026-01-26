@@ -1,29 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
     const inputText = document.getElementById('inputText');
-    const currentChar = document.getElementById('currentChar');
+    const currentCharSpan = document.getElementById('currentChar'); // Renamed to avoid conflict with existing charCounter element
     const convertButton = document.getElementById('convertButton');
     const resultText = document.getElementById('resultText');
     const copyButton = document.getElementById('copyButton');
     const targetAudience = document.getElementById('targetAudience');
-    const fetchTimeButton = document.getElementById('fetchTimeButton');
-    const currentTimeDisplay = document.getElementById('currentTimeDisplay');
+    // Removed fetchTimeButton and currentTimeDisplay as time-fetcher section is removed
 
     const MAX_CHARS = 500;
 
-    // FR-04: 입력 편의성 - 글자 수 실시간 카운트
+    // FR-04: 입력 편의성 - 글자 수 실시간 카운트 및 입력 제한
     inputText.addEventListener('input', () => {
-        const textLength = inputText.value.length;
-        currentChar.textContent = textLength;
+        let textLength = inputText.value.length;
 
         if (textLength > MAX_CHARS) {
             inputText.value = inputText.value.substring(0, MAX_CHARS);
-            currentChar.textContent = MAX_CHARS;
-            // 시각적 경고 (예: 색상 변경)
-            currentChar.parentElement.style.color = '#D0021B'; // Error color
+            textLength = MAX_CHARS; // Update textLength after truncation
+            currentCharSpan.parentElement.style.color = 'var(--error-color)'; // Use CSS variable
+            convertButton.disabled = true; // Disable convert button if over limit
         } else {
-            currentChar.parentElement.style.color = '#888'; // Default color
+            currentCharSpan.parentElement.style.color = '#888'; // Default color
+            convertButton.disabled = false; // Enable convert button if within limit
         }
+        currentCharSpan.textContent = textLength;
     });
+
+    // Initialize character count on load
+    inputText.dispatchEvent(new Event('input')); // Trigger input event to set initial count and button state
+
 
     // FR-01: 핵심 말투 변환 - 변환 버튼 클릭 이벤트
     convertButton.addEventListener('click', async () => {
