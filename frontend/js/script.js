@@ -1,13 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const inputText = document.getElementById('inputText');
-    const currentCharSpan = document.getElementById('currentChar'); // Renamed to avoid conflict with existing charCounter element
+    const currentCharSpan = document.getElementById('currentChar');
     const convertButton = document.getElementById('convertButton');
     const resultText = document.getElementById('resultText');
     const copyButton = document.getElementById('copyButton');
     const targetAudience = document.getElementById('targetAudience');
-    // Removed fetchTimeButton and currentTimeDisplay as time-fetcher section is removed
+    const feedbackMessage = document.createElement('div'); // Create feedback message element
+    feedbackMessage.classList.add('feedback-message');
+    resultText.parentNode.insertBefore(feedbackMessage, resultText.nextSibling); // Insert after resultText
 
     const MAX_CHARS = 500;
+
+    // Helper function to show feedback messages
+    function showFeedback(message, type) {
+        feedbackMessage.textContent = message;
+        feedbackMessage.className = `feedback-message ${type}`;
+        feedbackMessage.style.display = 'block';
+        setTimeout(() => {
+            feedbackMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    // Update copy button state
+    function updateCopyButtonState() {
+        const hasConvertedText = resultText.textContent.trim() !== '' && resultText.textContent.trim() !== '변환 결과가 여기에 표시됩니다.' && !resultText.querySelector('.error');
+        copyButton.disabled = !hasConvertedText;
+        copyButton.style.display = hasConvertedText ? 'block' : 'none'; // Only show copy button if there is text to copy
+    }
 
     // FR-04: 입력 편의성 - 글자 수 실시간 카운트 및 입력 제한
     inputText.addEventListener('input', () => {
@@ -15,37 +34,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (textLength > MAX_CHARS) {
             inputText.value = inputText.value.substring(0, MAX_CHARS);
-            textLength = MAX_CHARS; // Update textLength after truncation
-            currentCharSpan.parentElement.style.color = 'var(--error-color)'; // Use CSS variable
-            convertButton.disabled = true; // Disable convert button if over limit
+            textLength = MAX_CHARS;
+            currentCharSpan.parentElement.style.color = 'var(--error-color)';
+            convertButton.disabled = true;
         } else {
-            currentCharSpan.parentElement.style.color = '#888'; // Default color
-            convertButton.disabled = false; // Enable convert button if within limit
+            currentCharSpan.parentElement.style.color = '#888';
+            convertButton.disabled = false;
         }
         currentCharSpan.textContent = textLength;
     });
 
-    // Initialize character count on load
     inputText.dispatchEvent(new Event('input')); // Trigger input event to set initial count and button state
+    updateCopyButtonState(); // Initialize copy button state
 
-
-    // FR-01: 핵심 말투 변환 - 변환 버튼 클릭 이벤트
     convertButton.addEventListener('click', async () => {
         const textToConvert = inputText.value.trim();
         const audience = targetAudience.value;
 
         if (textToConvert.length === 0) {
-            alert('변환할 텍스트를 입력해주세요.');
+            showFeedback('변환할 텍스트를 입력해주세요.', 'error');
             return;
         }
 
-        // 로딩 상태 시작
         convertButton.classList.add('loading');
         convertButton.disabled = true;
-        resultText.innerHTML = '<p>변환 중입니다...</p>';
+        copyButton.disabled = true; // Disable copy button during conversion
+        resultText.innerHTML = '<p class="placeholder-text">변환 중입니다...</p>';
+        feedbackMessage.style.display = 'none'; // Hide any previous feedback
 
         try {
-            // 2단계: 백엔드 API와의 비동기 통신 로직 구현 (Fetch API)
             const response = await fetch('/convert', {
                 method: 'POST',
                 headers: {
@@ -57,46 +74,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 }),
             });
 
-            // 응답 본문을 JSON으로 파싱
             const data = await response.json();
 
-            // FR-05: 오류 처리 (개선)
             if (!response.ok) {
-                // 백엔드에서 보낸 구체적인 에러 메시지를 사용
                 const errorMessage = data.error || '알 수 없는 서버 오류가 발생했습니다.';
                 throw new Error(errorMessage);
             }
             
-            // 성공 시 결과 표시
             if(data.convertedText) {
                 resultText.innerHTML = `<p>${data.convertedText.replace(/\n/g, '<br>')}</p>`;
+                showFeedback('텍스트 변환 성공!', 'success');
             } else {
                  throw new Error('변환된 텍스트가 없습니다.');
             }
 
         } catch (error) {
             console.error('Error during conversion:', error);
-            // 사용자에게 구체적인 에러 메시지 표시
-            resultText.innerHTML = `<p style="color: #D0021B;">오류: ${error.message}</p>`;
+            resultText.innerHTML = `<p class="placeholder-text error">오류: ${error.message}</p>`; // Use class for error text
+            showFeedback(`변환 실패: ${error.message}`, 'error');
         } finally {
-            // 로딩 상태 종료
             convertButton.classList.remove('loading');
             convertButton.disabled = false;
+            updateCopyButtonState(); // Update copy button state after conversion
         }
     });
 
-    // FR-03: 결과 활용 - 복사하기 버튼
     copyButton.addEventListener('click', () => {
-        const textToCopy = resultText.innerText;
+        const textToCopy = resultText.textContent; // Use textContent to avoid HTML tags
 
-        if (!textToCopy || textToCopy === '변환 결과가 여기에 표시됩니다.' || resultText.querySelector('p[style*="color: #D0021B"]')) {
-            alert('복사할 내용이 없습니다.');
+        if (!textToCopy || resultText.querySelector('.placeholder-text.error')) { // Check for error placeholder
+            showFeedback('복사할 내용이 없습니다.', 'error');
             return;
         }
 
         navigator.clipboard.writeText(textToCopy).then(() => {
-            // 복사 성공 시 시각적 피드백
-            copyButton.textContent = '✅ 복사 완료!';
+            showFeedback('✅ 복사 완료!', 'success');
+            copyButton.textContent = '✅ 복사 완료!'; // Visual feedback on the button
             copyButton.classList.add('success');
             
             setTimeout(() => {
@@ -105,9 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         }).catch(err => {
             console.error('Failed to copy text: ', err);
-            alert('텍스트 복사에 실패했습니다.');
+            showFeedback('텍스트 복사에 실패했습니다.', 'error');
         });
     });
+});
 
     // 서버 시간 가져오기 버튼 클릭 이벤트
     fetchTimeButton.addEventListener('click', async () => {
