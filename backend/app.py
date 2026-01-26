@@ -51,6 +51,14 @@ def favicon():
     return send_from_directory('../frontend', 'favicon.ico')
 # -------------------------
 
+import datetime
+
+@app.route('/api/time')
+def get_current_time():
+    """ 현재 서버 시간을 반환합니다. """
+    now = datetime.datetime.now()
+    return jsonify({"currentTime": now.strftime("%Y-%m-%d %H:%M:%S")})
+
 
 @app.route('/convert', methods=['POST'])
 def convert_text():

@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultText = document.getElementById('resultText');
     const copyButton = document.getElementById('copyButton');
     const targetAudience = document.getElementById('targetAudience');
+    const fetchTimeButton = document.getElementById('fetchTimeButton');
+    const currentTimeDisplay = document.getElementById('currentTimeDisplay');
 
     const MAX_CHARS = 500;
 
@@ -102,4 +104,22 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('텍스트 복사에 실패했습니다.');
         });
     });
+
+    // 서버 시간 가져오기 버튼 클릭 이벤트
+    fetchTimeButton.addEventListener('click', async () => {
+        currentTimeDisplay.textContent = '가져오는 중...';
+        try {
+            const response = await fetch('/api/time');
+            if (!response.ok) {
+                throw new Error('서버 시간을 가져오지 못했습니다.');
+            }
+            const data = await response.json();
+            currentTimeDisplay.textContent = `현재 서버 시간: ${data.currentTime}`;
+        } catch (error) {
+            console.error('Error fetching time:', error);
+            currentTimeDisplay.textContent = `시간을 가져오는 데 실패했습니다: ${error.message}`;
+            currentTimeDisplay.style.color = '#D0021B';
+        }
+    });
 });
+

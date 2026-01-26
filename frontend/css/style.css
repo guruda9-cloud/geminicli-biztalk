@@ -187,3 +187,47 @@ button#convertButton.loading::after {
         margin-bottom: 20px;
     }
 }
+
+/* New styles for time fetcher */
+.time-fetcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 380px; /* Adjusted width to a more compact card-like size */
+    background-color: #FFFFFF;
+    border: 1px solid #E0E6ED;
+    border-radius: 8px;
+    padding: 10px; /* Adjusted padding for slightly smaller height */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    z-index: 1000; /* Ensure it stays on top */
+}
+
+.time-fetcher h2 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 8px; /* Adjusted margin */
+}
+
+button#fetchTimeButton {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 8px 15px; /* Adjusted padding */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 8px; /* Adjusted margin */
+    transition: background-color 0.2s;
+}
+
+button#fetchTimeButton:hover {
+    background-color: #45a049;
+}
+
+#currentTimeDisplay {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333333;
+    min-height: 20px; /* Ensure space for content even if empty */
+}
