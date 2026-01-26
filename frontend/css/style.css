@@ -3,135 +3,184 @@
 --- */
 
 /* 5.4. 타이포그래피 (Typography) & 5.3. 색상 팔레트 (Color Palette) */
+:root {
+    --primary-color: #4A90E2;
+    --secondary-bg-color: #F5F7FA;
+    --text-color-dark: #333333;
+    --text-color-light: #FFFFFF;
+    --success-color: #50E3C2;
+    --error-color: #D0021B;
+    --border-color: #E0E6ED;
+}
+
 body {
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-    background-color: #F5F7FA;
-    color: #333333;
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color-dark);
     margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    padding: 0;
+    line-height: 1.6;
+    font-size: 16px;
 }
 
-.container {
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     width: 100%;
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-header {
+/* Header Styles */
+.app-header {
     text-align: center;
-    margin-bottom: 40px;
+    padding: 20px 0;
+    margin-bottom: 30px;
 }
 
-header h1 {
+.app-header h1 {
     font-size: 28px;
-    color: #333333;
+    color: var(--text-color-dark);
+    margin-bottom: 10px;
 }
 
-header p {
+.app-header p {
     font-size: 16px;
     color: #555;
 }
 
-/* 5.2. 레이아웃 (Layout) */
-.converter-wrapper {
+/* Main Content Layout */
+.main-content {
     display: flex;
     gap: 20px;
+    flex-grow: 1;
+    margin-bottom: 30px;
 }
 
-/* 5.5. 컴포넌트 스타일 (Card) */
+/* Card Styles */
 .card {
-    background-color: #FFFFFF;
-    border: 1px solid #E0E6ED;
+    background-color: var(--text-color-light);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .card h2 {
     font-size: 22px;
     margin-top: 0;
     margin-bottom: 20px;
+    color: var(--text-color-dark);
 }
 
-/* 5.5. 컴포넌트 스타일 (Textarea) */
-textarea#inputText {
-    width: calc(100% - 24px);
+/* Textarea Styles */
+textarea {
+    width: 100%;
     min-height: 200px;
-    border: 1px solid #E0E6ED;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 12px;
     font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     font-size: 16px;
     resize: vertical;
+    box-sizing: border-box; /* Include padding in width */
+    margin-bottom: 10px;
 }
 
-textarea#inputText:focus {
+textarea:focus {
     outline: none;
-    border-color: #4A90E2;
+    border-color: var(--primary-color);
 }
 
 .char-counter {
     font-size: 14px;
     text-align: right;
     color: #888;
-    margin-top: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
-/* 5.5. 컴포넌트 스타일 (Button, Select) */
-.options {
+/* Options (Select & Button) Container */
+.options-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space out elements */
+    gap: 15px; /* Gap between select and button */
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.target-audience-selector {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
-.options label {
+.target-audience-selector label {
     font-size: 16px;
+    white-space: nowrap; /* Prevent label from wrapping */
 }
 
-select#targetAudience {
-    padding: 8px;
+select {
+    padding: 8px 12px;
     border-radius: 4px;
-    border: 1px solid #E0E6ED;
+    border: 1px solid var(--border-color);
     font-size: 16px;
+    background-color: var(--text-color-light);
+    cursor: pointer;
+    appearance: none; /* Remove default select arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%234A90E2%22%20d%3D%22M287%20197.97L146.2%2057.17l-140.8%20140.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    min-width: 120px; /* Ensure a decent minimum width */
 }
 
-button#convertButton {
-    background-color: #4A90E2;
-    color: #FFFFFF;
+/* Button Styles */
+.convert-button, .copy-button {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, opacity 0.2s;
+    white-space: nowrap; /* Prevent button text from wrapping */
 }
 
-button#convertButton:hover {
-    background-color: #357ABD; /* 밝기 10% 증가 효과 */
+.convert-button:hover:not(:disabled), .copy-button:hover:not(:disabled) {
+    background-color: #357ABD; /* Darken primary color */
 }
 
-/* 로딩 상태 */
-button#convertButton.loading {
-    background-color: #357ABD;
+.convert-button:disabled, .copy-button:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
-button#convertButton.loading::after {
+/* Loading state for button */
+.convert-button.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.convert-button.loading::after {
     content: '';
     display: inline-block;
     width: 16px;
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.5);
-    border-left-color: #FFFFFF;
+    border-left-color: var(--text-color-light);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-left: 10px;
-    vertical-align: middle;
 }
 
 @keyframes spin {
@@ -140,94 +189,132 @@ button#convertButton.loading::after {
     }
 }
 
-
+/* Result Area Styles */
 .result-area {
-    background-color: #F5F7FA;
-    border: 1px solid #E0E6ED;
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     min-height: 200px;
     padding: 12px;
     font-size: 16px;
     line-height: 1.6;
+    flex-grow: 1; /* Allow result area to grow */
+    overflow-y: auto; /* Enable scrolling for long results */
+    white-space: pre-wrap; /* Preserve whitespace and wrap text */
+}
+
+.result-area .placeholder-text {
+    color: #888;
 }
 
 .copy-button {
-    background-color: #FFFFFF;
-    color: #4A90E2;
-    border: 1px solid #4A90E2;
+    background-color: var(--text-color-light);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin-top: 15px; /* Spacing from result area */
+    align-self: flex-end; /* Align to the right in flex column */
+}
+
+.copy-button:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+
+/* Feedback messages (Success/Error) */
+.feedback-message {
+    padding: 10px;
     border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 12px;
-    float: right;
-    transition: background-color 0.2s, color 0.2s;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
 }
 
-.copy-button:hover {
-    background-color: #F5F7FA;
+.feedback-message.success {
+    background-color: var(--success-color);
+    color: var(--text-color-light);
 }
 
-.copy-button.success {
-    background-color: #50E3C2;
-    border-color: #50E3C2;
-    color: #FFFFFF;
+.feedback-message.error {
+    background-color: var(--error-color);
+    color: var(--text-color-light);
+}
+
+/* Footer Styles */
+.app-footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    color: #777;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto; /* Push footer to the bottom */
 }
 
 
-/* 5.2. 레이아웃 (Layout) - 반응형 */
+/* Responsive Design */
 @media (max-width: 768px) {
-    body {
+    #app {
         padding: 15px;
     }
-    .converter-wrapper {
-        flex-direction: column;
+
+    .main-content {
+        flex-direction: column; /* Stack columns vertically */
+        gap: 15px;
     }
-    header {
+
+    .app-header h1 {
+        font-size: 24px;
+    }
+
+    .app-header p {
+        font-size: 14px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .options-container {
+        flex-direction: column; /* Stack options vertically */
+        align-items: stretch; /* Stretch items to full width */
+        gap: 10px;
+    }
+
+    .target-audience-selector {
+        justify-content: space-between;
+    }
+
+    .convert-button, .copy-button, select {
+        width: 100%; /* Full width buttons/select */
+    }
+
+    .copy-button {
+        align-self: stretch; /* Ensure it stretches in column layout */
+    }
+}
+
+@media (max-width: 480px) {
+    #app {
+        padding: 10px;
+    }
+
+    .app-header {
         margin-bottom: 20px;
     }
-}
 
-/* New styles for time fetcher */
-.time-fetcher {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 380px; /* Adjusted width to a more compact card-like size */
-    background-color: #FFFFFF;
-    border: 1px solid #E0E6ED;
-    border-radius: 8px;
-    padding: 10px; /* Adjusted padding for slightly smaller height */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    z-index: 1000; /* Ensure it stays on top */
-}
+    .app-header h1 {
+        font-size: 20px;
+    }
 
-.time-fetcher h2 {
-    font-size: 18px;
-    margin-top: 0;
-    margin-bottom: 8px; /* Adjusted margin */
-}
+    .card {
+        padding: 15px;
+    }
 
-button#fetchTimeButton {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 8px 15px; /* Adjusted padding */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 15px;
-    margin-bottom: 8px; /* Adjusted margin */
-    transition: background-color 0.2s;
-}
+    .card h2 {
+        font-size: 18px;
+    }
 
-button#fetchTimeButton:hover {
-    background-color: #45a049;
-}
-
-#currentTimeDisplay {
-    font-size: 17px;
-    font-weight: bold;
-    color: #333333;
-    min-height: 20px; /* Ensure space for content even if empty */
+    textarea, select, .convert-button, .copy-button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
 }
