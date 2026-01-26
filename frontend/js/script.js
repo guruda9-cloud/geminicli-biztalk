@@ -123,21 +123,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-    // 서버 시간 가져오기 버튼 클릭 이벤트
-    fetchTimeButton.addEventListener('click', async () => {
-        currentTimeDisplay.textContent = '가져오는 중...';
-        try {
-            const response = await fetch('/api/time');
-            if (!response.ok) {
-                throw new Error('서버 시간을 가져오지 못했습니다.');
-            }
-            const data = await response.json();
-            currentTimeDisplay.textContent = `현재 서버 시간: ${data.currentTime}`;
-        } catch (error) {
-            console.error('Error fetching time:', error);
-            currentTimeDisplay.textContent = `시간을 가져오는 데 실패했습니다: ${error.message}`;
-            currentTimeDisplay.style.color = '#D0021B';
-        }
-    });
-});
-
