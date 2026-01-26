@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -8,7 +8,9 @@ from groq import Groq
 load_dotenv()
 
 # Flask 애플리케이션 생성
-app = Flask(__name__)
+# frontend 디렉토리를 template_folder로 설정
+app = Flask(__name__, template_folder='../frontend')
+
 # CORS 설정: 모든 도메인에서 오는 요청을 허용 (개발 초기 단계)
 CORS(app)
 
@@ -27,9 +29,28 @@ PROMPT_TEMPLATES = {
     "client": "다음 문장을 고객에게 적합한 공식적이고 정중한 비즈니스 어투로 변환해주세요: "
 }
 
+# --- Static File Serving ---
 @app.route('/')
-def home():
-    return "BizTone Converter 백엔드 서버입니다."
+def index():
+    """ frontend/index.html 파일을 렌더링합니다. """
+    return render_template('index.html')
+
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    """ frontend/css 디렉토리의 파일을 제공합니다. """
+    return send_from_directory('../frontend/css', filename)
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    """ frontend/js 디렉토리의 파일을 제공합니다. """
+    return send_from_directory('../frontend/js', filename)
+
+@app.route('/favicon.ico')
+def favicon():
+    """ favicon.ico 파일을 제공합니다. """
+    return send_from_directory('../frontend', 'favicon.ico')
+# -------------------------
+
 
 @app.route('/convert', methods=['POST'])
 def convert_text():
@@ -52,7 +73,7 @@ def convert_text():
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            model="llama3-8b-8192", # PRD에는 llama3-8b-8192 모델이 명시되어 있지 않지만, Groq AI API는 llama3 모델을 지원합니다.
+            model="llama-3.1-8b-instant",
             temperature=0.7,
             max_tokens=1024
         )
