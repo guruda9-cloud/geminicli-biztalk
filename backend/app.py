@@ -95,4 +95,5 @@ def convert_text():
 
 # 이 파일이 직접 실행될 때만 Flask 개발 서버를 실행
 if __name__ == '__main__':
+    # Vercel 배포를 위한 빈 주석 추가 (새로운 배포 트리거용)
     app.run(debug=True)
