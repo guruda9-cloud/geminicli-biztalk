@@ -318,3 +318,53 @@ select {
         padding: 8px 15px;
     }
 }
+
+/* Feedback Section Styles */
+.feedback-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.feedback-section p {
+    margin: 0;
+    font-size: 15px;
+    color: #555;
+}
+
+.feedback-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.feedback-button {
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.feedback-button:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.feedback-button.helpful:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--text-color-light);
+}
+
+.feedback-button.not-helpful:hover {
+    background-color: var(--error-color);
+    border-color: var(--error-color);
+    color: var(--text-color-light);
+}

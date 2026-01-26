@@ -9,8 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     feedbackMessage.classList.add('feedback-message');
     resultText.parentNode.insertBefore(feedbackMessage, resultText.nextSibling);
 
+    const feedbackSection = document.querySelector('.feedback-section');
+    const feedbackHelpfulBtn = document.getElementById('feedbackHelpful');
+    const feedbackNotHelpfulBtn = document.getElementById('feedbackNotHelpful');
+
     const MAX_CHARS = 500;
     let lastRequest = { text: '', audience: '' };
+    let lastConvertedText = ''; // Store last converted text for feedback
 
     function showFeedback(message, type) {
         feedbackMessage.textContent = message;
@@ -28,15 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function performConversion(textToConvert, audience) {
-        lastRequest = { text: textToConvert, audience: audience }; // Store last request
+        lastRequest = { text: textToConvert, audience: audience };
 
         convertButton.classList.add('loading');
         convertButton.disabled = true;
         copyButton.disabled = true;
         resultText.innerHTML = '<p class="placeholder-text">변환 중입니다...</p>';
         feedbackMessage.style.display = 'none';
+        feedbackSection.style.display = 'none'; // Hide feedback section on new conversion
         
-        // Remove retry button if it exists
         const oldRetryButton = resultText.parentNode.querySelector('.retry-button');
         if (oldRetryButton) {
             oldRetryButton.remove();
@@ -62,8 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             if(data.convertedText) {
-                resultText.innerHTML = `<p>${data.convertedText.replace(/\n/g, '<br>')}</p>`;
+                lastConvertedText = data.convertedText; // Store converted text
+                resultText.innerHTML = `<p>${lastConvertedText.replace(/\n/g, '<br>')}</p>`;
                 showFeedback('텍스트 변환 성공!', 'success');
+                feedbackSection.style.display = 'flex'; // Show feedback section on success
             } else {
                  throw new Error('변환된 텍스트가 없습니다.');
             }
@@ -73,14 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
             resultText.innerHTML = `<p class="placeholder-text error">오류: ${error.message}</p>`;
             showFeedback(`변환 실패: ${error.message}`, 'error');
 
-            // Add retry button
             const retryButton = document.createElement('button');
             retryButton.textContent = '재시도';
             retryButton.classList.add('retry-button');
-            retryButton.classList.add('convert-button'); // Reuse button style
+            retryButton.classList.add('convert-button');
             retryButton.style.marginTop = '10px';
             retryButton.addEventListener('click', () => performConversion(lastRequest.text, lastRequest.audience));
-            resultText.parentNode.insertBefore(retryButton, feedbackMessage); // Insert before feedback message
+            resultText.parentNode.insertBefore(retryButton, feedbackMessage);
 
         } finally {
             convertButton.classList.remove('loading');
@@ -98,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentCharSpan.parentElement.style.color = 'var(--error-color)';
             convertButton.disabled = true;
         } else {
-            currentCharSpan.parentElement.color = '#888';
+            currentCharSpan.parentElement.style.color = '#888'; // Corrected property name
             convertButton.disabled = false;
         }
         currentCharSpan.textContent = textLength;
@@ -139,6 +145,29 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to copy text: ', err);
             showFeedback('텍스트 복사에 실패했습니다.', 'error');
         });
+    });
+
+    // Feedback button event listeners
+    feedbackHelpfulBtn.addEventListener('click', () => {
+        console.log('Feedback: Helpful', {
+            originalText: lastRequest.text,
+            targetAudience: lastRequest.audience,
+            convertedText: lastConvertedText,
+            feedback: 'helpful'
+        });
+        showFeedback('피드백 감사합니다!', 'success');
+        feedbackSection.style.display = 'none'; // Hide after feedback
+    });
+
+    feedbackNotHelpfulBtn.addEventListener('click', () => {
+        console.log('Feedback: Not Helpful', {
+            originalText: lastRequest.text,
+            targetAudience: lastRequest.audience,
+            convertedText: lastConvertedText,
+            feedback: 'not_helpful'
+        });
+        showFeedback('피드백 감사합니다!', 'success');
+        feedbackSection.style.display = 'none'; // Hide after feedback
     });
 });
 
