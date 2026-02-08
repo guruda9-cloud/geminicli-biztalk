@@ -1,0 +1,155 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": "1",
+        "title": "프로젝트 초기 환경 구성 및 구조 설계",
+        "description": "Flask 백엔드와 정적 프런트엔드 폴더 구조를 생성하고 필수 의존성을 설치합니다.",
+        "details": "1. 프로젝트 루트에 backend/ 및 frontend/ 디렉토리 생성. 2. backend/requirements.txt 작성 (flask, flask-cors, python-dotenv, groq). 3. .env 파일 생성 및 GROQ_API_KEY 설정. 4. venv 가상환경 구성.",
+        "testStrategy": "backend/app.py 실행 시 에러 없이 서버가 구동되는지 확인하고, frontend/index.html이 브라우저에서 로드되는지 확인.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:51:52.145Z"
+      },
+      {
+        "id": "2",
+        "title": "Groq AI API 연동 및 백엔드 기본 API 구현",
+        "description": "Flask를 사용하여 사용자의 입력을 받아 Groq AI에게 전달하고 변환된 결과를 반환하는 API 엔드포인트를 구현합니다.",
+        "details": "1. Flask-CORS를 적용하여 프런트엔드 통신 허용. 2. POST /api/convert 엔드포인트 생성. 3. groq 라이브러리를 사용하여 chat.completions.create 호출. 4. 기본 에러 핸들링 로직 포함.",
+        "testStrategy": "Postman 또는 curl을 사용하여 JSON 바디(text, target)를 포함한 POST 요청을 보내고 변환된 텍스트 응답이 오는지 테스트.",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:52:06.867Z"
+      },
+      {
+        "id": "3",
+        "title": "대상별(상사, 동료, 고객) 프롬프트 엔지니어링 적용",
+        "description": "각 수신자 페르소나에 최적화된 시스템 프롬프트를 설계하고 적용합니다.",
+        "details": "1. 상사: 보고 형식, 격식체, 결론 중심. 2. 동료: 상호 존중, 요청 사항 명확화. 3. 고객: 극존칭, 서비스 마인드 강조. 4. 각 타겟 파라미터에 따라 'system_prompt'를 동적으로 선택하는 로직 구현.",
+        "testStrategy": "동일한 입력을 각기 다른 타겟으로 요청했을 때, 어조와 문체(예: ~했습니다 vs ~부탁드려요)가 확연히 구분되는지 확인.",
+        "priority": "high",
+        "dependencies": [
+          "2"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:52:20.531Z"
+      },
+      {
+        "id": "4",
+        "title": "반응형 기본 UI 레이아웃 개발",
+        "description": "PRD의 디자인 가이드를 준수하여 HTML5와 CSS3(Flexbox/Grid) 기반의 2단 레이아웃을 구현합니다.",
+        "details": "1. index.html에 헤더, 메인 컨테이너(입력 카드, 결과 카드), 푸터 배치. 2. style.css에 Primary Color(#4A90E2) 적용. 3. 768px 이하에서 세로 스택으로 전환되는 미디어 쿼리 작성. 4. 카드 UI에 그림자 효과 적용.",
+        "testStrategy": "브라우저 개발자 도구를 통해 데스크톱과 모바일 모드에서 레이아웃이 깨지지 않고 의도대로 변하는지 확인.",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:55:06.941Z"
+      },
+      {
+        "id": "5",
+        "title": "실시간 글자 수 카운터 및 입력 제한 로직 구현",
+        "description": "사용자가 입력하는 텍스트의 길이를 실시간으로 표시하고 500자 제한을 적용합니다.",
+        "details": "1. textarea의 input 이벤트를 감지하는 JS 리스너 등록. 2. 하단에 '현재 글자 수 / 500' 표시. 3. 500자 초과 시 입력 차단 또는 시각적 경고 처리.",
+        "testStrategy": "텍스트 입력 시 카운터가 즉각 반영되는지 확인하고, 500자 초과 입력을 시도했을 때의 동작 검증.",
+        "priority": "medium",
+        "dependencies": [
+          "4"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:56:13.388Z"
+      },
+      {
+        "id": "6",
+        "title": "프런트엔드-백엔드 비동기 통신 연동 (Fetch API)",
+        "description": "사용자가 '변환하기' 버튼을 클릭했을 때 백엔드 API를 호출하고 로딩 상태를 표시합니다.",
+        "details": "1. script.js에서 fetch()를 사용하여 POST /api/convert 호출. 2. 버튼 클릭 시 스피너 애니메이션 표시 및 버튼 비활성화. 3. 응답 수신 후 결과 영역에 텍스트 렌더링.",
+        "testStrategy": "네트워크 탭을 통해 페이로드가 올바르게 전달되는지 확인하고, 로딩 중 버튼 상태가 변하는지 테스트.",
+        "priority": "high",
+        "dependencies": [
+          "3",
+          "4"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:57:27.492Z"
+      },
+      {
+        "id": "7",
+        "title": "클립보드 복사 및 시각적 피드백 기능",
+        "description": "변환된 결과를 한 번의 클릭으로 복사하고 성공 메시지를 표시합니다.",
+        "details": "1. Navigator.clipboard.writeText() API 활용. 2. 복사 성공 시 토스트 알림 또는 '복사되었습니다!' 텍스트 일시적 노출. 3. Success Color(#50E3C2) 반영.",
+        "testStrategy": "복사 버튼 클릭 후 메모장 등에 붙여넣었을 때 변환된 텍스트와 일치하는지 확인.",
+        "priority": "medium",
+        "dependencies": [
+          "6"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T08:58:54.886Z"
+      },
+      {
+        "id": "8",
+        "title": "에러 처리 및 재시도 로직 구현",
+        "description": "네트워크 오류나 API 실패 시 사용자에게 알리고 재시도 기회를 제공합니다.",
+        "details": "1. fetch catch 블록에서 에러 메시지 노출. 2. Error Color(#D0021B) 적용. 3. 결과창 내에 '다시 시도' 버튼 생성 및 클릭 시 이전 요청 재전송.",
+        "testStrategy": "백엔드 서버를 일시 중지하거나 잘못된 API 경로를 호출하여 에러 UI가 정상적으로 나타나는지 확인.",
+        "priority": "medium",
+        "dependencies": [
+          "6"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T09:00:09.067Z"
+      },
+      {
+        "id": "9",
+        "title": "사용자 피드백 수집 기능 (Helpful/Not Helpful)",
+        "description": "결과물 하단에 간단한 만족도 조사 버튼을 추가합니다.",
+        "details": "1. 결과 텍스트 하단에 '도움됨', '도움 안 됨' 버튼 배치. 2. 클릭 시 감사의 메시지 노출 및 해당 데이터를 수집할 수 있는 로그 콘솔 출력(향후 확장 고려).",
+        "testStrategy": "버튼 클릭 시 UI 상태가 피드백 완료 상태로 변경되는지 확인.",
+        "priority": "low",
+        "dependencies": [
+          "7"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T09:02:17.318Z"
+      },
+      {
+        "id": "10",
+        "title": "Vercel 배포 설정 및 최종 최적화",
+        "description": "Vercel을 통해 서비스를 배포하기 위한 설정을 완료하고 배포 파이프라인을 구축합니다.",
+        "details": "1. 프로젝트 루트에 vercel.json 작성 (Python 런타임 및 정적 파일 경로 설정). 2. 환경 변수 GROQ_API_KEY 등록. 3. 폰트 로딩 가속화 및 CSS/JS 경량화 확인.",
+        "testStrategy": "배포된 URL에 접속하여 실제 환경에서 AI 변환 기능이 정상 작동하는지 전체 플로우 검증.",
+        "priority": "high",
+        "dependencies": [
+          "8",
+          "9"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-26T09:03:20.514Z"
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2026-01-26T09:03:20.514Z",
+      "taskCount": 10,
+      "completedCount": 10,
+      "tags": [
+        "master"
+      ]
+    }
+  }
+}
