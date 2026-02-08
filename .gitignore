@@ -26,3 +26,7 @@ node_modules/
 
 # Gemini CLI generated files
 .gemini/
+
+# Qwen AI / Taskmaster IDE config
+.qwen/
+.taskmaster/

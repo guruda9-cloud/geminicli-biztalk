@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    # fallback: use backend/.env if project .env not set
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
